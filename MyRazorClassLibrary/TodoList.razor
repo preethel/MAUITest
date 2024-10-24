@@ -1,0 +1,77 @@
+﻿@page "/todo"
+<h1 class="text-center my-4">Todo List</h1>
+
+@if (!string.IsNullOrEmpty(AlertMessage))
+{
+    <div class="alert @AlertClass" role="alert">
+        @AlertMessage
+    </div>
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form @onsubmit="HandleSubmit">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="New todo..." @bind="NewTodoTitle" required />
+                    <button type="submit" class="btn btn-primary">Add Todo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Completed</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var todo in Todos)
+                    {
+                        <tr>
+                            <th>@todo.Id</th>
+                            <td>
+                                @if (EditingTodo?.Id == todo.Id)
+                                {
+                                    <input type="text" class="form-control" @bind="EditingTodo.Title" />
+                                }
+                                else
+                                {
+                                    @todo.Title
+                                }
+                            </td>
+                            <td>
+                                @if (EditingTodo?.Id == todo.Id)
+                                {
+                                    <input type="checkbox" @bind="EditingTodo.IsCompleted" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" checked="@todo.IsCompleted" disabled />
+                                }
+                            </td>
+                            <td>
+                                @if (EditingTodo?.Id == todo.Id)
+                                {
+                                    <button class="btn btn-success btn-sm" @onclick="() => UpdateTodo(todo.Id)">Save</button>
+                                    <button class="btn btn-secondary btn-sm" @onclick="CancelEdit">Cancel</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-warning btn-sm" @onclick="() => EditTodo(todo)">Edit</button>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteTodo(todo.Id)">Delete</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
